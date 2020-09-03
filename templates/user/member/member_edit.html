@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="col-md-6">
+    <div class="content-box-large">
+        <div class="panel-heading">
+            <div class="panel-title">Update Member Form</div>
+
+            <div class="panel-options">
+                <a href="{% url 'users:member-add' %}" data-rel="collapse"><i
+                        class="glyphicon glyphicon-refresh"></i></a>
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal" role="form" method="post" action="{% url 'users:member-add' %}">
+                {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+                {% endfor %}
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="inputUsername" class="col-sm-2 control-label">UserName</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputUsername" placeholder="UserName"
+                               name="username" value="{% if form %}{{ form.username.value }}{% else %}{{ member.username }}{% endif %}">
+                        {% if form.username.errors %}
+                        <p></p>
+                        {% for error in form.name.errors %}
+                        <p><strong class="text-danger">{{ error|escape }}</strong></p>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control" id="inputEmail" placeholder="Email"
+                               name="email" value="{% if form %}{{ form.short_name.value }}{% else %}{{ member.email }}{% endif %}">
+                        {% if form.email.errors %}
+                        <p></p>
+                        {% for error in form.email.errors %}
+                        <p><strong class="text-danger">{{ error|escape }}</strong></p>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputRole" class="col-sm-2 control-label">Role</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="inputRole" name="role">
+                            <option value="0" {% if form.role == 0 or member.role == 0 %} selected {% endif %}>Admin</option>
+                            <option value="1" {% if form.role == 1 or member.role == 1 %} selected {% endif %}>Member</option>
+                        </select>
+                        {% if form.role.errors %}
+                        <p></p>
+                        {% for error in form.role.errors %}
+                        <p><strong class="text-danger">{{ error|escape }}</strong></p>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputActive" class="col-sm-2 control-label">Active</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="inputActive" name="is_activate">
+                            <option value="0" {% if form.is_activate == 0 or member.is_activate == 0 %}selected{% endif %}>InActive</option>
+                            <option value="1" {% if form.is_activate == 1 or member.is_activate == 1 %}selected{% endif %}>Active</option>
+                        </select>
+                        {% if form.is_activate.errors %}
+                        <p></p>
+                        {% for error in form.is_activate.errors %}
+                        <p><strong class="text-danger">{{ error|escape }}</strong></p>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPosition" class="col-sm-2 control-label">Position</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="inputPosition" name="position">
+                            {% for position in positions %}
+                            <option value="{{ position.id }}" {% if form.position.value == position.id or member.position == position.id %} selected {% endif %}>{{ position.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.position.errors %}
+                        <p></p>
+                        {% for error in form.position.errors %}
+                        <p><strong class="text-danger">{{ error|escape }}</strong></p>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label">Skill</label>
+                    <div class="col-sm-6">
+                        <input type="button" data-toggle="modal" value="Update skill" class="btn btn-primary" data-target="#inputSkill">
+                        <input type="hidden" name="skills" id="skills">
+                        <table class="table" id="tableSkill">
+                            <thead>
+				                <tr>
+				                  <th>Name</th>
+				                  <th>Level</th>
+				                  <th>EXP</th>
+				                </tr>
+                            </thead>
+                            <tbody>
+                            {% for skill in skills %}
+                                <tr>
+                                    <td>{{ skill.name }}</td>
+                                    <td>{% if skill.id == 0 %}
+                                        Junior
+                                        {% elif skill.id == 1 %}
+                                        Middle 1
+                                        {% elif skill.id == 2 %}
+                                        Middle 2
+                                        {% elif skill.id == 3 %}
+                                        Senior
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ skill.years_experience }} years</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputTeam" class="col-sm-2 control-label">Team</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="inputTeam" name="team">
+                            {% for team in teams %}
+                            <option value="{{ team.id }}" {% if form.team.value == team.id or member.team.id == team.id %} selected {% endif %}>{{ team.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.team.errors %}
+                        <p></p>
+                        {% for error in form.team.errors %}
+                        <p><strong class="text-danger">{{ error|escape }}</strong></p>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputProjectJoined" class="col-sm-2 control-label">Project Joined</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="inputProjectJoined" name="user_project_joined" multiple
+                                required>
+                            {% for project in user_project_joined %}
+                            <option value="{{ project.id }}" {% if form.user_project_joined.value == project.id %}
+                                    selected {% endif %}>{{ project.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.project_joined.errors %}
+                        <p></p>
+                        {% for error in form.project_joined.errors %}
+                        <p><strong class="text-danger">{{ error|escape }}</strong></p>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="inputSkill" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add skills</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-inline">
+                    <div class="form-skill-container">
+                        <div class="form-skill" id="form-skill-1">
+                            <input type="text" name="name-1" id="name-1" placeholder="Name">
+                            <input type="number" name="exp-1" id="exp-1" placeholder="EXP Years">
+                            <select id="level-1" name="level-1" >
+                                <option value="0">Junior</option>
+                                <option value="1">Middle 1</option>
+                                <option value="2">Middle 2</option>
+                                <option value="3">Senior</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="addMore">Add more</button>
+                <button type="button" class="btn btn-primary" id="add-skill">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block custom_js %}
+<script type="text/javascript">
+    var total = 1;
+    $(function() {
+        $("#addMore").click(function(e) {
+            e.preventDefault();
+            var addBlockId = total = total + 1;
+            const htmlSkill = `
+                <div class="form-skill" id="form-skill-${addBlockId}">
+                    <input type="text" name="name-${addBlockId}" id="name-${addBlockId}" placeholder="Name">
+                    <input type="number" name="exp-${addBlockId}" id="exp-${addBlockId}" placeholder="EXP Years">
+                    <select id="level-${addBlockId}" name="level-${addBlockId}" >
+                        <option value="0">Junior</option>
+                        <option value="1">Middle 1</option>
+                        <option value="2">Middle 2</option>
+                        <option value="3">Senior</option>
+                    </select>
+                </div>
+            `
+            $(".form-skill-container").append(htmlSkill)
+        });
+        $("#add-skill").click(function(e) {
+            let numberSkills = document.getElementsByClassName("form-skill").length;
+            let skills = [];
+            let i;
+            let skillTable = $("#tableSkill");
+            $(skillTable).removeAttr("hidden");
+            for (i=1 ; i<=numberSkills; i++) {
+                let ele = document.getElementById(`#form-skill-${i}`);
+                const name = document.getElementById(`name-${i}`).value;
+                const level = document.getElementById(`level-${i}`).value;
+                const exp = document.getElementById(`exp-${i}`).value
+                skills.push({
+                    name: name,
+                    level: level,
+                    exp: exp,
+                });
+                let levelDisplay;
+                switch (level) {
+                    case '0':
+                        levelDisplay = 'Junior';
+                        break;
+                    case '1':
+                        levelDisplay = 'Middle 1';
+                        break;
+                    case '2':
+                        levelDisplay = 'Middle 2';
+                        break;
+                    case '3':
+                        levelDisplay = 'Senior';
+                        break;
+                }
+
+                $("#tableSkill > tbody").append(`<tr><td>${name}</td><td>${levelDisplay}</td><td>${exp} years</td></tr>`)
+            }
+            $("#skills").val(JSON.stringify(skills));
+        });
+    });
+</script>
+{% endblock %}
